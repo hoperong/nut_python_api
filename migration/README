@@ -1,0 +1,20 @@
+python脚本：
+
+    export PYTHONPATH=`pwd`
+
+    alembic -c static/config/alembic.ini upgrade head
+
+    alembic -c static/config/alembic.ini revision --autogenerate -m "nut-xxx"
+
+
+sql脚本：
+
+    export PYTHONPATH=`pwd`
+
+    alembic -c static/config/alembic.ini upgrade <version> --sql > migration.sql  （数据库升级）
+
+    alembic -c static/config/alembic.ini downgrade <version> --sql > migration.sql （数据库降级）
+
+    alembic -c static/config/alembic.ini upgrade <vsersion>:<vsersion> --sql > migration.sql
+
+    eg: alembic -c static/config/alembic.ini upgrade 65a54c144ac0:head --sql > migration.sql
