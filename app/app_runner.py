@@ -1,21 +1,23 @@
 import os
+import logging
 
 from flask import Flask
 
 from app.storage.db import create_db
 
+logger = logging.getLogger()
+
 
 def auto_load_model():
     '''
-        仅支持自动加载app目录下的所有文件夹下的route.py文件中的route对象进app的蓝图里
-        如果还有其他需求请自行在下面加
+        仅支持自动加载app目录下的所有文件夹下的models.py文件中的继承了Base对象的模型
+        可以配合alembic生成sql更新文件
     '''
     result_list = []
     for name in os.listdir('app'):
         if not os.path.isdir(os.path.join('app', name)) or not os.path.exists(os.path.join('app', name, "models.py")):
             continue
         model_import = __import__("app.{0}.models".format(name))
-        print(dir(model_import))
 
         from app.models.base import Base
         for d in dir(model_import.models):
@@ -26,26 +28,50 @@ def auto_load_model():
                 if isinstance(m(), Base):
                     result_list.append(m)
             except Exception as e:
-                print(e)
-    print(result_list)
+                logger.debug(e)
     return result_list
 
 
 def init_db():
     '''
+        自动创建数据库，更新sql，进行数据填充
     '''
+    from alembic import command
+    from alembic.config import Config
+    from app.config.common import config as app_config
+    config = Config(app_config.get("ALEMBIC_CONFIG"))
+    config.set_main_option(
+        "script_location", app_config.get("ALEMBIC_SCRIPT_LOCATION"))
+    config.set_main_option(
+        "sqlalchemy.url", app_config.get("ALEMBIC_SQLALCHEMY_URL"))
+    command.upgrade(config, "head")
+    command.stamp(config, "head")
 
 
 def auto_load_route(app):
     '''
         仅支持自动加载app目录下的所有文件夹下的route.py文件中的route对象进app的蓝图里
     '''
-    for name in os.listdir():
-        if not os.path.isdir(name) or not os.path.exists(os.path.join(name, "route.py")):
+    for name in os.listdir('app'):
+        if not os.path.isdir(os.path.join('app', name)) or not os.path.exists(os.path.join('app', name, "route.py")):
             continue
-        blueprint = __import__("{0}.route".format(name))
-        if hasattr(blueprint.route, "route"):
-            app.register_blueprint(blueprint.route.route)
+        blueprint = __import__("app.{0}.route".format(name))
+        module = getattr(blueprint, name)
+        if hasattr(module.route, "route"):
+            app.register_blueprint(module.route.route)
+
+
+def i18n(app):
+    '''
+        初始化翻译
+    '''
+    from flask_babel import Babel
+    from flask import request
+    babel = Babel(app)
+
+    @babel.localeselector
+    def get_locale():
+        return request.accept_languages.best_match(['en', 'zh'])
 
 
 def create_app():
@@ -54,12 +80,9 @@ def create_app():
     create_db()
     # 自动加载模型
     auto_load_model()
-    # init_db()
+    init_db()
     # 自动加载路由
     auto_load_route(app)
+    # 添加第三方组件
+    i18n(app)
     return app
-
-
-if __name__ == "__main__":
-    flask_app = create_app()
-    flask_app.run()

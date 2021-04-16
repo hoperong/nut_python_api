@@ -13,8 +13,6 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 _ = auto_load_model()
-print(locals())
-print(dir())
 config.set_main_option(
     "script_location", app_config.get("ALEMBIC_SCRIPT_LOCATION"))
 config.set_main_option(

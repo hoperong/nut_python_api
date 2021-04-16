@@ -1,3 +1,4 @@
+from uuid import uuid4
 from app.models.base import Base
 from sqlalchemy import Boolean, Column, String
 from sqlalchemy.orm import relationship
