@@ -1,8 +1,8 @@
 """nut-0.0.1
 
-Revision ID: cfe41ef9fa64
+Revision ID: 1e868b20b57a
 Revises: 
-Create Date: 2021-04-16 13:41:12.172659
+Create Date: 2021-04-19 11:27:20.817746
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision = 'cfe41ef9fa64'
+revision = '1e868b20b57a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -60,6 +60,18 @@ def upgrade():
     comment='权限模块表'
     )
     op.create_index(op.f('ix_TI_module_deleted'), 'TI_module', ['deleted'], unique=False)
+    op.create_table('TI_permission',
+    sa.Column('created_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='创建时间'),
+    sa.Column('updated_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='更新时间'),
+    sa.Column('deleted_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='删除时间'),
+    sa.Column('deleted', sa.Boolean(), nullable=True, comment='是否删除'),
+    sa.Column('id', sa.String(length=255), nullable=False, comment='ID'),
+    sa.Column('resource_id', sa.String(length=255), nullable=False, comment='资源ID'),
+    sa.Column('action_id', sa.String(length=255), nullable=False, comment='操作ID'),
+    sa.PrimaryKeyConstraint('id', 'resource_id', 'action_id'),
+    comment='权限细则表'
+    )
+    op.create_index(op.f('ix_TI_permission_deleted'), 'TI_permission', ['deleted'], unique=False)
     op.create_table('TI_resource',
     sa.Column('created_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='创建时间'),
     sa.Column('updated_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='更新时间'),
@@ -74,30 +86,6 @@ def upgrade():
     comment='资源表'
     )
     op.create_index(op.f('ix_TI_resource_deleted'), 'TI_resource', ['deleted'], unique=False)
-    op.create_table('TI_role_function',
-    sa.Column('created_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='创建时间'),
-    sa.Column('updated_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='更新时间'),
-    sa.Column('deleted_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='删除时间'),
-    sa.Column('deleted', sa.Boolean(), nullable=True, comment='是否删除'),
-    sa.Column('id', sa.String(length=255), nullable=False, comment='ID'),
-    sa.Column('role_id', sa.String(length=255), nullable=False, comment='角色ID'),
-    sa.Column('function_id', sa.String(length=255), nullable=False, comment='权限功能ID'),
-    sa.PrimaryKeyConstraint('id', 'role_id', 'function_id'),
-    comment='角色权限功能表'
-    )
-    op.create_index(op.f('ix_TI_role_function_deleted'), 'TI_role_function', ['deleted'], unique=False)
-    op.create_table('TM_permission',
-    sa.Column('created_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='创建时间'),
-    sa.Column('updated_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='更新时间'),
-    sa.Column('deleted_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='删除时间'),
-    sa.Column('deleted', sa.Boolean(), nullable=True, comment='是否删除'),
-    sa.Column('id', sa.String(length=255), nullable=False, comment='ID'),
-    sa.Column('resource_id', sa.String(length=255), nullable=False, comment='资源ID'),
-    sa.Column('action_id', sa.String(length=255), nullable=False, comment='操作ID'),
-    sa.PrimaryKeyConstraint('id', 'resource_id', 'action_id'),
-    comment='权限细则表'
-    )
-    op.create_index(op.f('ix_TM_permission_deleted'), 'TM_permission', ['deleted'], unique=False)
     op.create_table('TM_role',
     sa.Column('created_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='创建时间'),
     sa.Column('updated_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='更新时间'),
@@ -124,6 +112,18 @@ def upgrade():
     comment='用户表'
     )
     op.create_index(op.f('ix_TM_user_deleted'), 'TM_user', ['deleted'], unique=False)
+    op.create_table('TR_function_module',
+    sa.Column('created_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='创建时间'),
+    sa.Column('updated_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='更新时间'),
+    sa.Column('deleted_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='删除时间'),
+    sa.Column('deleted', sa.Boolean(), nullable=True, comment='是否删除'),
+    sa.Column('id', sa.String(length=255), nullable=False, comment='ID'),
+    sa.Column('function_id', sa.String(length=255), nullable=False, comment='权限功能ID'),
+    sa.Column('module_id', sa.String(length=255), nullable=False, comment='权限模块ID'),
+    sa.PrimaryKeyConstraint('id', 'function_id', 'module_id'),
+    comment='权限功能模块表'
+    )
+    op.create_index(op.f('ix_TR_function_module_deleted'), 'TR_function_module', ['deleted'], unique=False)
     op.create_table('TR_function_permission',
     sa.Column('created_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='创建时间'),
     sa.Column('updated_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='更新时间'),
@@ -136,6 +136,18 @@ def upgrade():
     comment='权限功能细则表'
     )
     op.create_index(op.f('ix_TR_function_permission_deleted'), 'TR_function_permission', ['deleted'], unique=False)
+    op.create_table('TR_role_function',
+    sa.Column('created_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='创建时间'),
+    sa.Column('updated_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='更新时间'),
+    sa.Column('deleted_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='删除时间'),
+    sa.Column('deleted', sa.Boolean(), nullable=True, comment='是否删除'),
+    sa.Column('id', sa.String(length=255), nullable=False, comment='ID'),
+    sa.Column('role_id', sa.String(length=255), nullable=False, comment='角色ID'),
+    sa.Column('function_id', sa.String(length=255), nullable=False, comment='权限功能ID'),
+    sa.PrimaryKeyConstraint('id', 'role_id', 'function_id'),
+    comment='角色权限功能表'
+    )
+    op.create_index(op.f('ix_TR_role_function_deleted'), 'TR_role_function', ['deleted'], unique=False)
     op.create_table('TR_user_role',
     sa.Column('created_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='创建时间'),
     sa.Column('updated_at', mysql.DOUBLE(asdecimal=True), nullable=False, comment='更新时间'),
@@ -155,18 +167,20 @@ def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_index(op.f('ix_TR_user_role_deleted'), table_name='TR_user_role')
     op.drop_table('TR_user_role')
+    op.drop_index(op.f('ix_TR_role_function_deleted'), table_name='TR_role_function')
+    op.drop_table('TR_role_function')
     op.drop_index(op.f('ix_TR_function_permission_deleted'), table_name='TR_function_permission')
     op.drop_table('TR_function_permission')
+    op.drop_index(op.f('ix_TR_function_module_deleted'), table_name='TR_function_module')
+    op.drop_table('TR_function_module')
     op.drop_index(op.f('ix_TM_user_deleted'), table_name='TM_user')
     op.drop_table('TM_user')
     op.drop_index(op.f('ix_TM_role_deleted'), table_name='TM_role')
     op.drop_table('TM_role')
-    op.drop_index(op.f('ix_TM_permission_deleted'), table_name='TM_permission')
-    op.drop_table('TM_permission')
-    op.drop_index(op.f('ix_TI_role_function_deleted'), table_name='TI_role_function')
-    op.drop_table('TI_role_function')
     op.drop_index(op.f('ix_TI_resource_deleted'), table_name='TI_resource')
     op.drop_table('TI_resource')
+    op.drop_index(op.f('ix_TI_permission_deleted'), table_name='TI_permission')
+    op.drop_table('TI_permission')
     op.drop_index(op.f('ix_TI_module_deleted'), table_name='TI_module')
     op.drop_table('TI_module')
     op.drop_index(op.f('ix_TI_function_deleted'), table_name='TI_function')

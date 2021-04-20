@@ -1,9 +1,8 @@
 import os
 import logging
 
-from flask import Flask
-
-from app.storage.db import create_db
+from flask import (Flask, g)
+from app.storage.db import (create_db, get_session)
 
 logger = logging.getLogger()
 
@@ -61,28 +60,48 @@ def auto_load_route(app):
             app.register_blueprint(module.route.route)
 
 
-def i18n(app):
+def init_i18n(app):
     '''
         初始化翻译
     '''
     from flask_babel import Babel
     from flask import request
+    from app.config.common import config
+    app.config["BABEL_TRANSLATION_DIRECTORIES"] = config.get(
+        "BABEL_TRANSLATION_DIRECTORIES")
+    app.config["BABEL_DEFAULT_LOCALE"] = config.get("BABEL_DEFAULT_LOCALE")
     babel = Babel(app)
 
     @babel.localeselector
     def get_locale():
-        return request.accept_languages.best_match(['en', 'zh'])
+        # return request.accept_languages.best_match(['en', 'zh'])
+        return 'zh'
+
+
+def init_app(app):
+    '''
+        处理app的生命周期钩子函数
+    '''
+    @app.after_request
+    def commit_session(response):
+        get_session().commit()
+        return response
+
+    @app.teardown_request
+    def close_session(response):
+        get_session().remove()
 
 
 def create_app():
     app = Flask(__name__)
     # 连接数据库
-    create_db()
+    create_db(app)
     # 自动加载模型
     auto_load_model()
     init_db()
     # 自动加载路由
     auto_load_route(app)
+    init_app(app)
     # 添加第三方组件
-    i18n(app)
+    init_i18n(app)
     return app

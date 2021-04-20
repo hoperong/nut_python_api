@@ -12,6 +12,7 @@ flask-migrate = "*"
 pymysql = "*"
 sqlalchemy-utils = "*"
 flask-babel = "*"
+greenlet = "*"
 
 [dev-packages]
 

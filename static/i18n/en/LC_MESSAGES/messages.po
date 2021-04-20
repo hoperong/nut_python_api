@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-04-16 15:40+0800\n"
+"POT-Creation-Date: 2021-04-20 11:41+0800\n"
 "PO-Revision-Date: 2021-04-16 15:38+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,10 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: app/user/route.py:10
-msgid "Hello World!"
-msgstr ""
-
-#~ msgid "Holle World!"
-#~ msgstr ""
+#: app/app_runner.py:76 app/user/controller.py:17
+msgid "hello world"
+msgstr "h w"
 

@@ -75,7 +75,7 @@ class Action(Base):
 
 
 class Permission(Base):
-    __tablename__ = "TM_permission"
+    __tablename__ = "TI_permission"
 
     __table_args__ = (
         {"comment": "权限细则表"}
@@ -118,6 +118,24 @@ class Function(Base):
     key = Column(String(255), nullable=False, comment="唯一代码", unique=True)
 
 
+class FunctionModule(Base):
+    __tablename__ = "TR_function_module"
+
+    __table_args__ = (
+        {"comment": "权限功能模块表"}
+    )
+    id = Column(String(255), primary_key=True,
+                default=lambda: str(uuid4()), comment="ID")
+    function_id = Column(String(255), primary_key=True,
+                         default=lambda: str(uuid4()), comment="权限功能ID")
+    function = relationship('Function', foreign_keys=[
+                            function_id], primaryjoin="FunctionModule.function_id==Function.id", backref="funciont_module_list")
+    module_id = Column(String(255), primary_key=True,
+                       default=lambda: str(uuid4()), comment="权限模块ID")
+    module = relationship('Module', foreign_keys=[
+        module_id], primaryjoin="FunctionModule.module_id==Module.id", backref="funciont_module_list")
+
+
 class FunctionPermission(Base):
     __tablename__ = "TR_function_permission"
 
@@ -137,7 +155,7 @@ class FunctionPermission(Base):
 
 
 class RoleFunction(Base):
-    __tablename__ = "TI_role_function"
+    __tablename__ = "TR_role_function"
 
     __table_args__ = (
         {"comment": "角色权限功能表"}
