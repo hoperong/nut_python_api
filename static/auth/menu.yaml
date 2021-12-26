@@ -1,0 +1,93 @@
+name: 菜单
+description: 用于菜单权限数据初始化
+items:
+  - name: 总览
+    desc: 查看总览面板
+    key: index
+    type: menu
+  - name: 账号管理
+    desc: 管理平台用户相关信息
+    key: user
+    type: menu
+    items:
+      - name: 用户管理
+        desc: 管理平台用户
+        key: user.user
+        type: menu
+        items:
+          - name: 添加用户
+            key: user.user.add
+            type: button
+          - name: 修改用户
+            key: user.user.update
+            type: button
+          - name: 删除用户
+            key: user.user.delete
+            type: button
+      - name: 角色管理
+        desc: 管理平台角色
+        key: user.role
+        type: menu
+        items:
+          - name: 添加角色
+            key: user.role.add
+            type: button
+          - name: 修改角色
+            key: user.role.update
+            type: button
+          - name: 删除角色
+            key: user.role.delete
+            type: button
+          - name: 修改菜单权限
+            key: user.role.menu
+            type: button
+          - name: 修改功能权限
+            key: user.role.function
+            type: button
+  - name: 权限管理
+    desc: 管理权限数据
+    key: auth
+    type: menu
+    items:
+      - name: 菜单权限
+        desc: 管理平台用户
+        key: auth.menu
+        type: menu
+        items:
+          - name: 添加菜单
+            key: auth.menu.add
+            type: button
+          - name: 修改菜单
+            key: auth.menu.update
+            type: button
+          - name: 删除菜单
+            key: auth.menu.delete
+            type: button
+      - name: 功能权限
+        desc: 管理平台角色
+        key: auth.function
+        type: menu
+        items:
+          - name: 添加功能
+            key: auth.function.add
+            type: button
+          - name: 修改功能
+            key: auth.function.update
+            type: button
+          - name: 删除功能
+            key: auth.function.delete
+            type: button
+      - name: 接口资源
+        desc: 管理平台角色
+        key: auth.api
+        type: menu
+        items:
+          - name: 添加资源
+            key: auth.api.add
+            type: button
+          - name: 修改资源
+            key: auth.api.update
+            type: button
+          - name: 删除资源
+            key: auth.api.delete
+            type: button

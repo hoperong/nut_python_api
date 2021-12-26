@@ -1,7 +1,7 @@
 命令：
 
 搜索：
-pybabel extract -F static/i18n/babel.cfg -k _l -o static/i18n/messages.pot .
+pybabel extract -F static/i18n/babel.cfg -k gettext -o static/i18n/messages.pot .
 
 初始化语言：
 pybabel init -i static/i18n/messages.pot -d static/i18n -l en

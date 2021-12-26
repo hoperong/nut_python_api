@@ -1,4 +1,4 @@
-from app.models.base import Base
+from app.models.sqlalchemy import Base
 from app.app_runner import auto_load_model
 from app.config.common import config as app_config
 

@@ -6,14 +6,21 @@ class Config:
     config = None
 
     def __init__(self):
-        if os.getenv("app_schema") == "dev" or os.getenv("app_schema") == "":
+        if (
+            not os.getenv("app_schema")
+            or os.getenv("app_schema") == "dev"
+            or os.getenv("app_schema") == ""
+        ):
             from app.config.dev import DevConfig
+
             self.config = DevConfig()
         elif os.getenv("app_schema") == "pro":
             from app.config.dev import ProdConfig
+
             self.config = ProdConfig()
         else:
             from app.config.dev import BaseConfig
+
             self.config = BaseConfig()
 
     def get(self, key, default=""):

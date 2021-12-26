@@ -1,0 +1,9 @@
+name: 角色
+description: 用于角色数据初始化
+items:
+  - name: 平台管理员
+    is_admin: 
+    menus:
+      - *
+    functions:
+      - *

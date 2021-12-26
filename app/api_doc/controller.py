@@ -2,44 +2,66 @@ import os
 
 from flask import current_app
 from openapi_schema_pydantic import OpenAPI
-from openapi_schema_pydantic.util import PydanticSchema, construct_open_api_with_schema_class
+from openapi_schema_pydantic.util import (
+    PydanticSchema,
+    construct_open_api_with_schema_class,
+)
 from flask import render_template
 from pydantic import BaseModel
+from pydantic.schema import schema
 
-from app.core.app import ViewFuncWrapper
+from app.core.api import ViewFuncWrapper
 
-'''
+"""
 openapi 规范 https://github.com/OAI/OpenAPI-Specification/
-'''
+"""
 
 
 def get_open_api(app):
-    api_obj = {
-        "info": {"title": "xx开放平台接口文档", "version": "v0.0.1"},
-        "paths": {}
-    }
+    api_obj = {"info": {"title": "xx开放平台接口文档", "version": "v0.0.1"}, "paths": {}}
     for url in app.url_map.iter_rules():
+        print(url)
         func = app.view_functions[url.endpoint]
         if not isinstance(func, ViewFuncWrapper):
             continue
         item = {}
         for method in url.methods:
+            print(method)
             method = method.lower()
             if method not in ["get", "post", "put", "delete", "patch"]:
                 continue
             item[method] = {}
             item[method]["description"] = func.description
+            item[method]["summary"] = func.summary
             if hasattr(func, "tags") and func.tags:
                 item[method]["tags"] = func.tags
             # url上的参数
             item[method]["parameters"] = []
             for arg in url.arguments:
-                arg_obj = {"name": arg, "in": "path",
-                           "required": True, "schema": {"type": "string"}}
+                arg_obj = {
+                    "name": arg,
+                    "in": "path",
+                    "required": True,
+                    "schema": {"type": "string"},
+                }
                 item[method]["parameters"].append(arg_obj)
             # get参数
             if hasattr(func, "query") and func.query:
-                pass
+                sc = schema(models=[func.query])
+                obj_sc = sc.get("definitions", {})
+                obj_sc = obj_sc[list(obj_sc.keys())[0]] if len(sc.keys()) > 0 else {}
+                prop_list = obj_sc.get("properties", [])
+                required_list = obj_sc.get("required", [])
+                for key, value in prop_list.items():
+                    required = key in required_list
+                    prop = {
+                        "name": key,
+                        "in": "query",
+                        "required": required,
+                        "description": value.get("description", ""),
+                        "schema": value,
+                    }
+                    item[method]["parameters"].append(prop)
             if hasattr(func, "body") and func.body:
                 item[method]["requestBody"] = {
                     "content": {
@@ -55,11 +77,15 @@ def get_open_api(app):
                         "description": value.get("description", ""),
                         "content": {
                             "application/json": {
-                                "schema": PydanticSchema(schema_class=value.get("schema", BaseModel))
+                                "schema": PydanticSchema(
+                                    schema_class=value.get("schema", BaseModel)
+                                )
                             }
-                        }
+                        },
                     }
-        api_obj["paths"][url.rule] = item
+        if url.rule not in api_obj["paths"]:
+            api_obj["paths"][url.rule] = {}
+        api_obj["paths"][url.rule].update(item)
     return OpenAPI.parse_obj(api_obj)
 
 

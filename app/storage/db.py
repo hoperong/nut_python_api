@@ -1,27 +1,31 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import (sessionmaker, scoped_session)
+from sqlalchemy.orm import sessionmaker, scoped_session
+
+from app.models.sqlalchemy import Base
 
 
 class DB:
-
-    def __init__(self, conn=None):
+    def __init__(self, conn=None, echo=True):
         self.conn = conn
         self.engine = None
         self.session = None
         if conn:
-            self.engine = create_engine(conn)
+            self.engine = create_engine(conn, echo=echo)
             scopefunc = None
             try:
                 from greenlet import getcurrent
+
                 scopefunc = getcurrent
             except ImportError:
                 from threading import get_ident
+
                 scopefunc = get_ident
             self.session = scoped_session(
-                sessionmaker(self.engine), scopefunc=scopefunc)
+                sessionmaker(self.engine), scopefunc=scopefunc
+            )
 
     def get_session(self):
-        class NewSession():
+        class NewSession:
             def __init__(self, session):
                 self.session = session
 
@@ -31,7 +35,7 @@ class DB:
         return NewSession(self.session).get_session()
 
     def get_engine(self):
-        class NewEngine():
+        class NewEngine:
             def __init__(self, engine):
                 self.engine = engine
 
@@ -40,24 +44,23 @@ class DB:
 
         return NewEngine(self.engine).get_engine()
 
-    def update(self, conn):
-        self.engine = create_engine(conn)
+    def update(self, conn, echo=True):
+        self.engine = create_engine(conn, echo=echo)
         scopefunc = None
         try:
             from greenlet import getcurrent
+
             scopefunc = getcurrent
         except ImportError:
             from threading import get_ident
+
             scopefunc = get_ident
+        options = {}
+        options["expire_on_commit"] = False
+        options.setdefault("query_cls", Base.query_class)
         self.session = scoped_session(
-            sessionmaker(self.engine), scopefunc=scopefunc)
-
-
-class _SQLAlchemyState:
-
-    def __init__(self, db):
-        self.db = db
-        self.connectors = {}
+            sessionmaker(bind=self.engine, **options), scopefunc=scopefunc
+        )
 
 
 db = DB()
@@ -65,12 +68,14 @@ db = DB()
 
 def create_db(current_app):
     from app.config.common import config
+
     conn = config.get("DB_CONNECTION")
-    db.update(conn=conn)
+    echo = config.get("DB_ECHO")
+    db.update(conn, echo)
     from sqlalchemy_utils import database_exists, create_database
+
     if not database_exists(db.get_engine().url):
-        create_database(db.get_engine().url,
-                        encoding=config.get("DB_URL_ENCODING"))
+        create_database(db.get_engine().url, encoding=config.get("DB_URL_ENCODING"))
 
 
 def get_session():

@@ -1,0 +1,114 @@
+name: 功能
+description: 用于功能权限数据初始化
+items:
+  - name: 账号管理
+    desc: 管理平台用户相关信息
+    key: user
+    items:
+      - name: 用户管理
+        desc: 管理平台用户
+        key: user.user
+        apis:
+          - GET-/v1/users
+          - GET-/v1/users/<user_id>
+        items:
+          - name: 添加用户
+            key: user.user.add
+            apis:
+              - POST-/v1/users
+          - name: 修改用户
+            key: user.user.update
+            apis:
+              - PUT-/v1/users/<user_id>
+          - name: 删除用户
+            key: user.user.delete
+            apis:
+              - DELETE-/v1/users/<user_id>
+      - name: 角色管理
+        desc: 管理平台角色
+        key: user.role
+        apis:
+          - GET-/v1/roles
+          - GET-/v1/roles/<user_id>
+        items:
+          - name: 添加角色
+            key: user.role.add
+            apis:
+              - POST-/v1/roles
+          - name: 修改角色
+            key: user.role.update
+            apis:
+              - PUT-/v1/roles/<role_id>
+          - name: 删除角色
+            key: user.role.delete
+            apis:
+              - DELETE-/v1/roles/<role_id>
+          - name: 修改菜单权限
+            key: user.role.menu
+            apis:
+              - PUT-/v1/roles/<role_id>/menus
+          - name: 修改功能权限
+            key: user.role.function
+            apis:
+              - PUT-/v1/roles/<role_id>/functions
+  - name: 权限管理
+    desc: 管理权限数据
+    key: auth
+    items:
+      - name: 菜单权限
+        desc: 管理平台用户
+        key: auth.menu
+        apis:
+          - GET-/v1/menus
+          - GET-/v1/menus/<menu_id>
+        items:
+          - name: 添加菜单
+            key: auth.menu.add
+            apis:
+              - POST-/v1/menus
+          - name: 修改菜单
+            key: auth.menu.update
+            apis:
+              - PUT-/v1/menus/<menu_id>
+          - name: 删除菜单
+            key: auth.menu.delete
+            apis:
+              - DELETE-/v1/menus/<menu_id>
+      - name: 功能权限
+        desc: 管理平台角色
+        key: auth.function
+        apis:
+          - GET-/v1/functions
+          - GET-/v1/functions/<function_id>
+        items:
+          - name: 添加功能
+            key: auth.function.add
+            apis:
+              - POST-/v1/functions
+          - name: 修改功能
+            key: auth.function.update
+            apis:
+              - PUT-/v1/functions/<function_id>
+          - name: 删除功能
+            key: auth.function.delete
+            apis:
+              - DELETE-/v1/functions/<function_id>
+      - name: 接口资源
+        desc: 管理平台角色
+        key: auth.permission
+        apis:
+          - GET-/v1/permissions
+          - GET-/v1/permissions/<function_id>
+        items:
+          - name: 添加资源
+            key: auth.permission.add
+            apis:
+              - DELETE-/v1/permissions
+          - name: 修改资源
+            key: auth.permission.update
+            apis:
+              - DELETE-/v1/permissions/<permission_id>
+          - name: 删除资源
+            key: auth.permission.delete
+            apis:
+              - DELETE-/v1/permissions/<permission_id>
