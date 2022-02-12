@@ -7,14 +7,14 @@ class Config:
 
     def __init__(self):
         if (
-            not os.getenv("app_schema")
-            or os.getenv("app_schema") == "dev"
-            or os.getenv("app_schema") == ""
+            not os.getenv("APP_SCHEMA")
+            or os.getenv("APP_SCHEMA") == "dev"
+            or os.getenv("APP_SCHEMA") == ""
         ):
             from app.config.dev import DevConfig
 
             self.config = DevConfig()
-        elif os.getenv("app_schema") == "pro":
+        elif os.getenv("APP_SCHEMA") == "pro":
             from app.config.dev import ProdConfig
 
             self.config = ProdConfig()
@@ -31,7 +31,3 @@ class Config:
 
 
 config = Config()
-
-
-def str_to_bool(s):
-    pass

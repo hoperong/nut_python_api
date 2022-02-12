@@ -12,6 +12,7 @@ pymysql = "*"
 sqlalchemy-utils = "*"
 flask-babel = "*"
 greenlet = "*"
+flask-login = "*"
 
 [dev-packages]
 

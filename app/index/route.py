@@ -1,21 +1,22 @@
 from flask import Blueprint
+from pydantic import BaseModel
 
-from app.index.controller import(
-    ping
-)
+from app.index.controller import ping, login, logout
+from app.core.api import ViewFuncWrapper
+from app.index.schema import LoginUserSc
 
-route = Blueprint('index', __name__)
+route = Blueprint("index", __name__)
 
-route.add_url_rule('/ping', view_func=ping, methods=["GET"])
+route.add_url_rule("/ping", view_func=ping, methods=["GET"])
 
 route.add_url_rule(
     "/v1/login",
     view_func=ViewFuncWrapper(
-        create_user_view,
+        login,
         summary="登陆",
-        body=CreateUserInSc,
-        responses={200: {"schema": BaseModel, "description": "操作成功"}},
-        tags=["user"],
+        body=LoginUserSc,
+        responses={200: {"schema": BaseModel, "description": "登录成功"}},
+        tags=["index"],
     ),
     methods=["POST"],
 )
@@ -23,11 +24,10 @@ route.add_url_rule(
 route.add_url_rule(
     "/v1/logout",
     view_func=ViewFuncWrapper(
-        create_user_view,
+        logout,
         summary="退出",
-        body=CreateUserInSc,
-        responses={200: {"schema": BaseModel, "description": "操作成功"}},
-        tags=["user"],
+        responses={200: {"schema": BaseModel, "description": "退出成功"}},
+        tags=["index"],
     ),
     methods=["POST"],
 )

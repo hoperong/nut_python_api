@@ -62,6 +62,22 @@ def exists_role(name, id=None):
     return True, u"role name {} exists".format(name)
 
 
+def get_self_view():
+    pass
+
+
+def update_self_view():
+    pass
+
+
+def get_self_functions_view():
+    pass
+
+
+def get_self_menus_view():
+    pass
+
+
 def get_users_view():
     query = request.bind_query
     data, page_obj = get_user_list_by_page(query, query["page"], query["page_size"])
@@ -153,99 +169,25 @@ def delete_role_view(role_id):
     return
 
 
-def update_role_function_view(role_id):
+def get_menus_view():
     pass
 
 
-def get_modules_view():
-    query = request.bind_query
-    data, page_obj = get_module_list_by_page(query, query["page"], query["page_size"])
-    return {
-        "page": page_obj["page"],
-        "page_size": page_obj["page_size"],
-        "total": page_obj["total"],
-        "module_list": data,
-    }
+def get_role_menu_view(role_id):
+    pass
 
 
-def get_module_view(module_id):
-    module = get_module(module_id)
-    if not module:
-        raise NotFoundException(gettext(u"module {} not exists").format(module_id))
-    return {"module": module}
+def update_role_menu_view(role_id):
+    pass
 
 
 def get_functions_view():
-    query = request.bind_query
-    data, page_obj = get_function_list_by_page(query, query["page"], query["page_size"])
-    return {
-        "page": page_obj["page"],
-        "page_size": page_obj["page_size"],
-        "total": page_obj["total"],
-        "function_list": data,
-    }
+    pass
 
 
-def get_function_view(function_id):
-    function = get_function(function_id)
-    if not function:
-        raise NotFoundException(gettext(u"function {} not exists").format(function_id))
-    return {"function": function}
+def get_role_function_view(role_id):
+    pass
 
 
-def get_permissions_view():
-    query = request.bind_query
-    data, page_obj = get_permission_list_by_page(
-        query, query["page"], query["page_size"]
-    )
-    return {
-        "page": page_obj["page"],
-        "page_size": page_obj["page_size"],
-        "total": page_obj["total"],
-        "permission_list": data,
-    }
-
-
-def get_permission_view(permission_id):
-    permission = get_permission(permission_id)
-    if not permission:
-        raise NotFoundException(
-            gettext(u"permission {} not exists").format(permission_id)
-        )
-    return {"permission": permission}
-
-
-def get_resources_view():
-    query = request.bind_query
-    data, page_obj = get_resource_list_by_page(query, query["page"], query["page_size"])
-    return {
-        "page": page_obj["page"],
-        "page_size": page_obj["page_size"],
-        "total": page_obj["total"],
-        "resource_list": data,
-    }
-
-
-def get_resource_view(resource_id):
-    resource = get_resource(resource_id)
-    if not resource:
-        raise NotFoundException(gettext(u"resource {} not exists").format(resource_id))
-    return {"resource": resource}
-
-
-def get_actions_view():
-    query = request.bind_query
-    data, page_obj = get_action_list_by_page(query, query["page"], query["page_size"])
-    return {
-        "page": page_obj["page"],
-        "page_size": page_obj["page_size"],
-        "total": page_obj["total"],
-        "action_list": data,
-    }
-
-
-def get_action_view(action_id):
-    action = get_action(action_id)
-    if not action:
-        raise NotFoundException(gettext(u"action {} not exists").format(action_id))
-    return {"action": action}
+def update_role_function_view(role_id):
+    pass

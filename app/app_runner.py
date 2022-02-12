@@ -125,6 +125,19 @@ def init_auth():
     pass
 
 
+def init_login(app):
+    """
+    添加登录插件，手机哟理解那个flask-login，cookie+session来做登录
+    todo:后期需要改成jwt+redis来实现高可用
+    """
+    from flask_login import LoginManager
+    from app.config.common import config
+
+    login_manager = LoginManager()
+    app.config["SECRET_KEY"] = config.get("SECRET_KEY")
+    login_manager.init_app(app)
+
+
 def create_app():
     app = Flask(__name__)
     # 连接数据库
@@ -139,4 +152,6 @@ def create_app():
     init_app(app)
     # 添加第三方组件
     init_i18n(app)
+    # 添加登录插件
+    init_login(app)
     return app

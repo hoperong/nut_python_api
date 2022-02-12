@@ -5,11 +5,8 @@ from app.user.models import (
     User,
     Role,
     UserRole,
-    Module,
     Function,
     Permission,
-    Resource,
-    Action,
 )
 
 from app.core.exception import InternalServerError
@@ -125,95 +122,3 @@ def delete_role(id):
     get_session().delete(role)
     get_session().flush()
     return
-
-
-def update_role_function(id):
-    pass
-
-
-def get_module_list_by_page(query, page=1, page_size=10):
-    query = (
-        get_session()
-        .query(Module)
-        .filter(
-            Module.name.like("%{}%".format(query["q"]))
-            | Module.key.like("%{}%".format(query["q"]))
-        )
-    )
-    total = query.count()
-    result = query.paginate(page, page_size).all()
-    return result, {"page": page, "page_size": page_size, "total": total}
-
-
-def get_module(id):
-    module = get_session().query(Module).filter(Module.id == id).first()
-    return module
-
-
-def get_function_list_by_page(query, page=1, page_size=10):
-    query = (
-        get_session()
-        .query(Function)
-        .filter(
-            Function.name.like("%{}%".format(query["q"]))
-            | Function.key.like("%{}%".format(query["q"]))
-        )
-    )
-    total = query.count()
-    result = query.paginate(page, page_size).all()
-    return result, {"page": page, "page_size": page_size, "total": total}
-
-
-def get_function(id):
-    function = get_session().query(Function).filter(Function.id == id).first()
-    return function
-
-
-def get_permission_list_by_page(query, page=1, page_size=10):
-    query = get_session().query(Permission)
-    total = query.count()
-    result = query.paginate(page, page_size).all()
-    return result, {"page": page, "page_size": page_size, "total": total}
-
-
-def get_permission(id):
-    permission = get_session().query(Permission).filter(Permission.id == id).first()
-    return permission
-
-
-def get_resource_list_by_page(query, page=1, page_size=10):
-    query = (
-        get_session()
-        .query(Resource)
-        .filter(
-            Resource.name.like("%{}%".format(query["q"]))
-            | Resource.key.like("%{}%".format(query["q"]))
-        )
-    )
-    total = query.count()
-    result = query.paginate(page, page_size).all()
-    return result, {"page": page, "page_size": page_size, "total": total}
-
-
-def get_resource(id):
-    resource = get_session().query(Resource).filter(Resource.id == id).first()
-    return resource
-
-
-def get_action_list_by_page(query, page=1, page_size=10):
-    query = (
-        get_session()
-        .query(Action)
-        .filter(
-            Action.name.like("%{}%".format(query["q"]))
-            | Action.key.like("%{}%".format(query["q"]))
-        )
-    )
-    total = query.count()
-    result = query.paginate(page, page_size).all()
-    return result, {"page": page, "page_size": page_size, "total": total}
-
-
-def get_action(id):
-    action = get_session().query(Action).filter(Action.id == id).first()
-    return action

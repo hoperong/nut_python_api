@@ -1,11 +1,19 @@
 import os
 
 from app.utils.path import get_full_path
+from app.utils.utils import (
+    str2bool,
+    str2int,
+)
 
 
 class BaseConfig:
     APP_SCHEMA = os.getenv("APP_SCHEMA", "")
-    APP_DEBUG = os.getenv("APP_DEBUG", True)
+    APP_DEBUG = str2bool(os.getenv("APP_DEBUG"), True)
+    APP_HOST = os.getenv("APP_HOST", "0.0.0.0")
+    APP_PORT = str2int(os.getenv("APP_PORT"), 8000)
+
+    SECRET_KEY = os.getenv("SECRET_KEY","6e355fce-15bc-4892-be47-2b4e8c8dd64e")
 
     _DB_CONNECTION = os.getenv(
         "DB_CONNECTION",
@@ -15,7 +23,7 @@ class BaseConfig:
     # db
     DB_CONNECTION = _DB_CONNECTION
     DB_URL_ENCODING = os.getenv("DB_URL_ENCODING", "utf8mb4")
-    DB_ECHO = os.getenv("DB_ECHO", True)
+    DB_ECHO = str2bool(os.getenv("DB_ECHO"), True)
 
     # alembic
     ALEMBIC_SCRIPT_LOCATION = os.getenv("ALEMBIC_SCRIPT_LOCATION", "migration")
@@ -32,5 +40,5 @@ class BaseConfig:
 
     # api_doc
     API_DOC_TEMPLATES = os.getenv(
-        "API_DOC_TEMPLATES", get_full_path("static", "templates/api_doc")
+        "API_DOC_TEMPLATES", get_full_path("static", "templates", "api_doc")
     )
